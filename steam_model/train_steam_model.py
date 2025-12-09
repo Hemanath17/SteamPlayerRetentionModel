@@ -260,19 +260,14 @@ def group_train_val_test_split(
 def build_model():
     """
     Build a sklearn Pipeline for binary classification using
-    HistGradientBoostingClassifier and preprocessing that matches
-    the original notebook:
-
-      - Scale numeric features
-      - Pass through boolean features
-      - One-hot encode categorical features
+    HistGradientBoostingClassifier and basic preprocessing.
 
     Returns:
       model: sklearn Pipeline
       feature_cols: list of feature column names
     """
 
-    # Continuous numeric features (from the notebook)
+    # Only use columns we know are in the Postgres table
     numeric_features = [
         "author_num_games_owned",
         "author_num_reviews",
@@ -282,19 +277,8 @@ def build_model():
         "votes_funny",
         "comment_count",
         "weighted_vote_score",
-        "len_char",
-        "len_token",
-        "R_len",
-        "R_digit",
-        "specificity_idf",
-        "R_spec",
-        "R_fam",
-        "R_conc",
-        "specificity_lex",
-        "sentiment_score",
     ]
 
-    # Boolean / 0–1 features
     bool_features = [
         "voted_up",
         "steam_purchase",
@@ -303,22 +287,18 @@ def build_model():
         "primarily_steam_deck",
     ]
 
-    # Categorical features
     categorical_features = [
         "author_language",
-        "sentiment_label",
     ]
 
     feature_cols = numeric_features + bool_features + categorical_features
 
-    # Preprocessing
     numeric_transformer = Pipeline(
         steps=[
             ("scaler", StandardScaler()),
         ]
     )
 
-    # Booleans are already 0/1 → passthrough
     bool_transformer = "passthrough"
 
     categorical_transformer = OneHotEncoder(handle_unknown="ignore")
@@ -335,14 +315,15 @@ def build_model():
         random_state=RANDOM_STATE,
     )
 
-    model = Pipeline(
+    clf = Pipeline(
         steps=[
             ("preprocess", preprocessor),
             ("model", classifier),
         ]
     )
 
-    return model, feature_cols
+    return clf, feature_cols
+
 
 # ---------------------------------------------------------------------
 # 5. Evaluation helper
