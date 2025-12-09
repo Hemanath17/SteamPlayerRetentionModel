@@ -1,6 +1,6 @@
 services:
   tracking-server:
-    image: theo733/g2_547_final:latest
+    image: theodore1910/g2_547_final:latest
     env_file:
       - .env
     ports:
@@ -15,7 +15,7 @@ services:
       --gunicorn-opts "--log-level debug"
 
   inference:
-    image: theo733/g2_547_final:latest
+    image: theodore1910/g2_547_final:latest
     depends_on:
       - tracking-server
     env_file:
