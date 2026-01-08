@@ -15,5 +15,5 @@ provider "digitalocean" {
 }
 
 data "digitalocean_ssh_key" "terraform" {
-  name = "theodore-lowell-a7" // Replace here
+  name = "your-ssh-key-name" // Replace with your DigitalOcean SSH key name
 }
